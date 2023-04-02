@@ -1,4 +1,6 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { fetchUsers } from "../actions/user.js"
 import Header from "../components/Header"
 
 const inputStyles = {
@@ -24,13 +26,30 @@ const buttonStyles = {
   cursor: 'pointer',
 }
 
+const divDataStyles = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  flexDirection: 'column',
+  width: '100vw'
+}
+
 function Login() {
   const [ email, setEmail ] = useState('')
   const [ senha, setSenha ] = useState('')
+  const [ buttonClicked, setButttonClicked ] = useState(false)
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchUsers())
+  }, [dispatch])
+
+  const data = useSelector(state => state.users)
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(email, senha)
+    setButttonClicked(!buttonClicked)
   }
 
   return (
@@ -56,6 +75,22 @@ function Login() {
 
           </div>
           <button type="submit" style={buttonStyles}>Confirmar</button>
+          <div style={divDataStyles}>
+            {
+              buttonClicked && (
+                data.users.map(user => (
+                  <>
+                    <div key={user._id}>
+                      <p>ID: {user._id}</p>
+                      <p>Email: {user.email}</p>
+                      <p>Senha: {user.password}</p>
+                    </div>
+                    <br />
+                  </>
+                ))
+              )
+            }
+          </div>
         </div>
       </form>
     </div>

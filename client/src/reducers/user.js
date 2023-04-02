@@ -1,4 +1,4 @@
-export const userReducer = (users=[], action) => {
+export default (users=[], action) => {
     switch (action.type) {
         case 'FETCH_ALL':
             return action.payload
